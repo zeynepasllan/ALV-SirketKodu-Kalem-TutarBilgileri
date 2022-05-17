@@ -1,0 +1,134 @@
+<!DOCTY "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xht />
+<title>ZZAS_P05_FRM</title>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: ZZAS_P05_FRM</h2>
+<h3> Description: </h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="code">
+DEFINE top_of_page  .<br />
+&nbsp;&nbsp;gt_top-typ&nbsp;&nbsp;=&nbsp;&1&nbsp;.<br />
+&nbsp;&nbsp;gt_top-key&nbsp;&nbsp;=&nbsp;&2&nbsp;.<br />
+&nbsp;&nbsp;gt_top-info&nbsp;=&nbsp;&3&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;gt_top&nbsp;.&nbsp;CLEAR&nbsp;gt_top&nbsp;.<br />
+end-of-definition   .<br />
+FORM get_data .<br />
+&nbsp;&nbsp;SELECT&nbsp;*&nbsp;FROM&nbsp;bkpf<br />
+&nbsp;&nbsp;INNER&nbsp;JOIN&nbsp;bseg&nbsp;ON&nbsp;bseg~belnr&nbsp;EQ&nbsp;bkpf~belnr<br />
+&nbsp;&nbsp;INTO&nbsp;CORRESPONDING&nbsp;FIELDS&nbsp;OF&nbsp;TABLE&nbsp;gt_ot2.<br />
+ENDFORM.<br />
+FORM show_alv .<br />
+&nbsp;&nbsp;PERFORM:&nbsp;set_fc_sub<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'BUKRS'&nbsp;'Þirket&nbsp;kodu'&nbsp;abap_true&nbsp;'&nbsp;',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'BELNR'&nbsp;'Belge&nbsp;numarasý'&nbsp;abap_true&nbsp;'X',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'GJAHR'&nbsp;'Yýl'&nbsp;abap_true&nbsp;'&nbsp;',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'BUZEI'&nbsp;'Kalem'&nbsp;abap_true&nbsp;'&nbsp;',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'BLART'&nbsp;'Tür'&nbsp;'&nbsp;'&nbsp;'&nbsp;',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'BLDAT'&nbsp;'Belge&nbsp;Tarihi'&nbsp;'&nbsp;'&nbsp;'&nbsp;',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'BUDAT'&nbsp;'Kayýt&nbsp;Tarihi'&nbsp;'&nbsp;'&nbsp;'&nbsp;',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'WAERS'&nbsp;'PB'&nbsp;'&nbsp;'&nbsp;'&nbsp;',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;'WRBTR'&nbsp;'Tutar'&nbsp;'&nbsp;'&nbsp;'&nbsp;'.<br />
+&nbsp;&nbsp;PERFORM&nbsp;:&nbsp;create_layout&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top_title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create_alv&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+ENDFORM.<br />
+FORM create_layout .<br />
+&nbsp;&nbsp;gs_layout-colwidth_optimize&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;gs_layout-zebra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;gs_layout-box_fieldname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'MARK'.<br />
+ENDFORM.<br />
+FORM pf_status_set USING p_extab TYPE slis_t_extab.<br />
+&nbsp;&nbsp;SET&nbsp;PF-STATUS&nbsp;'ZSTANDARD'.<br />
+ENDFORM.<br />
+FORM create_alv .<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'REUSE_ALV_GRID_DISPLAY'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_callback_program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;sy-repid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_callback_pf_status_set&nbsp;=&nbsp;'GUI'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_callback_user_command&nbsp;&nbsp;=&nbsp;'COMMAND'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_layout&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gs_layout<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_fieldcat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gt_fcat[]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_callback_top_of_page&nbsp;&nbsp;&nbsp;=&nbsp;'TOP_OF_PAGE'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;TABLES<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t_outtab&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gt_ot2[]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXCEPTIONS<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;program_error&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;1<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OTHERS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;2.<br />
+ENDFORM.<br />
+FORM create_fcat .<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'REUSE_ALV_FIELDCATALOG_MERGE'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_program_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;sy-repid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_internal_tabname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'GT_OT'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_inclname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;sy-repid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_client_never_display&nbsp;=&nbsp;'X'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_bypassing_buffer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'X'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CHANGING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ct_fieldcat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gt_fcat[]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXCEPTIONS<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OTHERS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;3.<br />
+ENDFORM.<br />
+FORM set_fc_sub USING p_fieldname<br />
+&nbsp;&nbsp;p_seltext_m<br />
+&nbsp;&nbsp;p_key<br />
+&nbsp;&nbsp;p_hotspot.<br />
+&nbsp;&nbsp;CLEAR:&nbsp;gs_fieldcatalog.<br />
+&nbsp;&nbsp;gs_fieldcatalog-fieldname&nbsp;=&nbsp;p_fieldname.<br />
+&nbsp;&nbsp;gs_fieldcatalog-seltext_m&nbsp;=&nbsp;p_seltext_m.<br />
+&nbsp;&nbsp;gs_fieldcatalog-key&nbsp;=&nbsp;&nbsp;p_key.<br />
+&nbsp;&nbsp;gs_fieldcatalog-hotspot&nbsp;=&nbsp;&nbsp;p_hotspot.<br />
+&nbsp;&nbsp;APPEND&nbsp;gs_fieldcatalog&nbsp;TO&nbsp;gt_fcat.<br />
+ENDFORM.<br />
+FORM modify_fcat  USING fieldname target value p_hotspot.<br />
+&nbsp;&nbsp;DATA:&nbsp;lv_fieldname(30).<br />
+&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;field&gt;&nbsp;TYPE&nbsp;any.<br />
+&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;gt_fcat&nbsp;WITH&nbsp;KEY&nbsp;fieldname&nbsp;=&nbsp;fieldname&nbsp;INTO&nbsp;gs_fcat.<br />
+&nbsp;&nbsp;CHECK&nbsp;sy-subrc&nbsp;=&nbsp;0.<br />
+&nbsp;&nbsp;CONCATENATE&nbsp;'GS_FCAT-'&nbsp;target&nbsp;INTO&nbsp;lv_fieldname.<br />
+&nbsp;&nbsp;ASSIGN&nbsp;(lv_fieldname)&nbsp;TO&nbsp;&lt;field&gt;.<br />
+&nbsp;&nbsp;&lt;field&gt;&nbsp;=&nbsp;value.<br />
+&nbsp;&nbsp;MODIFY&nbsp;gt_fcat&nbsp;FROM&nbsp;gs_fcat&nbsp;INDEX&nbsp;sy-tabix&nbsp;.<br />
+ENDFORM.<br />
+FORM gui USING g_xpa TYPE slis_t_extab.<br />
+&nbsp;&nbsp;SET&nbsp;PF-STATUS&nbsp;'GUI'.<br />
+ENDFORM.<br />
+FORM command USING p_ucomm LIKE sy-ucomm rs_selfield TYPE slis_selfield.<br />
+&nbsp;&nbsp;CASE&nbsp;p_ucomm.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'&IC1'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;gt_ot2&nbsp;INTO&nbsp;gs_ot2&nbsp;INDEX&nbsp;rs_selfield-tabindex.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SET&nbsp;PARAMETER&nbsp;ID&nbsp;'BLN'&nbsp;FIELD&nbsp;gs_ot2-belnr.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;TRANSACTION&nbsp;'FB03'&nbsp;AND&nbsp;SKIP&nbsp;FIRST&nbsp;SCREEN.<br />
+&nbsp;&nbsp;ENDCASE.<br />
+ENDFORM.<br />
+FORM top_title.<br />
+&nbsp;&nbsp;DATA&nbsp;lv_datum(10)&nbsp;.<br />
+&nbsp;&nbsp;DATA&nbsp;lv_uzeit(8)&nbsp;.<br />
+&nbsp;&nbsp;WRITE&nbsp;:&nbsp;sy-datum&nbsp;TO&nbsp;lv_datum&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sy-uzeit&nbsp;TO&nbsp;lv_uzeit&nbsp;.<br />
+&nbsp;&nbsp;top_of_page&nbsp;:&nbsp;'H'&nbsp;'&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Belge&nbsp;listesi'&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'S'&nbsp;'Kullanici'&nbsp;&nbsp;sy-uname&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'S'&nbsp;'Tarih'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_datum&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'S'&nbsp;'Saat'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_uzeit&nbsp;&nbsp;.<br />
+ENDFORM.<br />
+FORM top_of_page.<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'REUSE_ALV_COMMENTARY_WRITE'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_logo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'ENJOYSAP_LOGO'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_list_commentary&nbsp;=&nbsp;gt_top[].<br />
+ENDFORM.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
